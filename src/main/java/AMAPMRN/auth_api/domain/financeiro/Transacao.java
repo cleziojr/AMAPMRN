@@ -33,7 +33,7 @@ public class Transacao {
     private StatusTransacao status;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     private User usuario;
 
     private String categoria;
