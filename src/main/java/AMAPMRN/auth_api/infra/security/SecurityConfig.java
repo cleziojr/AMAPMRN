@@ -18,6 +18,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // LIBERAR TODAS AS ROTAS DE ASSOCIADOS
                 .requestMatchers("/associados/**").permitAll()
+                .requestMatchers("/eventos/**").permitAll()
 
                 // Todo o resto continua protegido
                 .anyRequest().authenticated()
