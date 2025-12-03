@@ -16,6 +16,16 @@ public class SecurityConfig {
 
             // Configura as permissões
             .authorizeHttpRequests(auth -> auth
+                // LIBERAR SWAGGER
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/v3/api-docs.yaml",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/swagger-ui/index.html"
+                ).permitAll()
+
+
                 // LIBERAR TODAS AS ROTAS DE ASSOCIADOS
                 .requestMatchers("/associados/**").permitAll()
                 .requestMatchers("/eventos/**").permitAll()
