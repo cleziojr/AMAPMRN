@@ -46,6 +46,10 @@ public class User implements UserDetails {
         return id;
     }
 
+    public UserRole getRole() {
+        return this.role;
+    }
+
     @Override
     public String getUsername() {
         return login;
