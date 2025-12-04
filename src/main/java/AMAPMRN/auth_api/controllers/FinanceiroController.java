@@ -20,9 +20,12 @@ public class FinanceiroController {
     FinanceiroService financeiroService;
 
     @PostMapping
-    public ResponseEntity criar(@RequestBody @Valid TransacaoDTO dados) {
-        financeiroService.criarTransacao(dados);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<TransacaoResponseDTO> criar(@RequestBody @Valid TransacaoDTO dados) {
+        // Recebe a transação criada
+        var novaTransacao = financeiroService.criarTransacao(dados);
+
+        // Retorna 200 (ou 201) com o JSON no corpo
+        return ResponseEntity.ok(novaTransacao);
     }
 
     @DeleteMapping("/{id}")
@@ -67,14 +70,5 @@ public class FinanceiroController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim
     ) {
         return ResponseEntity.ok(financeiroService.buscarPorCriacao(inicio, fim));
-    }
-
-    // GET /financeiro/meus-lancamentos?status=PENDENTE
-    @GetMapping("/meus-lancamentos")
-    public ResponseEntity<List<TransacaoResponseDTO>> listarMeusLancamentos(
-            @RequestParam(required = false) String status
-    ) {
-        var transacoes = financeiroService.listarMinhasTransacoes(status);
-        return ResponseEntity.ok(transacoes);
     }
 }

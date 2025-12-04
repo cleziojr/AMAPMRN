@@ -1,10 +1,9 @@
 package AMAPMRN.auth_api.services;
 
+import AMAPMRN.auth_api.domain.associado.Associado;
 import AMAPMRN.auth_api.domain.financeiro.*;
-import AMAPMRN.auth_api.domain.user.User;
+import AMAPMRN.auth_api.repositories.AssociadoRepository;
 import AMAPMRN.auth_api.repositories.TransacaoRepository;
-import AMAPMRN.auth_api.repositories.UserRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,28 +20,34 @@ public class FinanceiroService {
     TransacaoRepository transacaoRepository;
 
     @Autowired
-    UserRepository userRepository;
+    AssociadoRepository associadoRepository;
 
-    public void criarTransacao(TransacaoDTO dados) {
-        User usuario = userRepository.findById(dados.usuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    public TransacaoResponseDTO criarTransacao(TransacaoDTO dados) {
+        Associado associado = associadoRepository.findById(dados.associadoId())
+                .orElseThrow(() -> new RuntimeException("Associado não encontrado"));
 
         Transacao novaTransacao = new Transacao(
                 dados.valor(),
                 dados.descricao(),
                 dados.tipo(),
-                usuario,
+                associado,
                 dados.categoria()
         );
-        transacaoRepository.save(novaTransacao);
+
+        // Salva e guarda o objeto salvo (que agora tem ID)
+        var transacaoSalva = transacaoRepository.save(novaTransacao);
+
+        // Retorna o DTO com os dados
+        return new TransacaoResponseDTO(transacaoSalva);
     }
 
-    public List<TransacaoResponseDTO> listarTransacoes(String usuarioId, String tipo) {
+    public List<TransacaoResponseDTO> listarTransacoes(String associadoId, String tipo) {
         List<Transacao> transacoes;
+
         if (tipo == null || tipo.isEmpty()) {
-            transacoes = transacaoRepository.findAllByUsuarioId(usuarioId);
+            transacoes = transacaoRepository.findAllByAssociadoId(associadoId);
         } else {
-            transacoes = transacaoRepository.findAllByUsuarioIdAndTipo(usuarioId, TipoTransacao.valueOf(tipo.toUpperCase()));
+            transacoes = transacaoRepository.findAllByAssociadoIdAndTipo(associadoId, TipoTransacao.valueOf(tipo.toUpperCase()));
         }
         return converterLista(transacoes);
     }
@@ -75,20 +80,5 @@ public class FinanceiroService {
 
     private List<TransacaoResponseDTO> converterLista(List<Transacao> lista) {
         return lista.stream().map(TransacaoResponseDTO::new).toList();
-    }
-
-    public List<TransacaoResponseDTO> listarMinhasTransacoes(String status) {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        User usuarioLogado = (User) auth.getPrincipal();
-        String meuId = usuarioLogado.getId();
-
-        List<Transacao> transacoes;
-        if (status == null || status.isEmpty()) {
-            transacoes = transacaoRepository.findAllByUsuarioId(meuId);
-        } else {
-            transacoes = transacaoRepository.findAllByUsuarioIdAndStatus(meuId, StatusTransacao.valueOf(status.toUpperCase()));
-        }
-
-        return transacoes.stream().map(TransacaoResponseDTO::new).toList();
     }
 }

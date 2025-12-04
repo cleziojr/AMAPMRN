@@ -1,11 +1,14 @@
 package AMAPMRN.auth_api.domain.associado;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Table(name = "associados")
 @Entity(name = "associados")
+@Table(name = "associados")
+@NoArgsConstructor
 public class Associado {
 
     @Id
@@ -17,51 +20,22 @@ public class Associado {
     @Column(unique = true)
     private String cpf;
 
-    private String identidade;
-
     private String email;
-
     private String telefone;
-
-    private String profissao;
-
-    private String religiao;
-
     private LocalDate dataNascimento;
 
-    private Double valorContribuicaoMensal;
+    private String profissao;
+    private String religiao;
 
     private boolean ativo = true;
 
-    public Associado() {
-    }
-
-    public Associado(String id,
-                     String nome,
-                     String cpf,
-                     String identidade,
-                     String email,
-                     String telefone,
-                     String profissao,
-                     String religiao,
-                     LocalDate dataNascimento,
-                     Double valorContribuicaoMensal,
-                     boolean ativo) {
-
-        this.id = id;
+    public Associado(String nome, String cpf, String email, LocalDate dataNascimento) {
         this.nome = nome;
         this.cpf = cpf;
-        this.identidade = identidade;
         this.email = email;
-        this.telefone = telefone;
-        this.profissao = profissao;
-        this.religiao = religiao;
         this.dataNascimento = dataNascimento;
-        this.valorContribuicaoMensal = valorContribuicaoMensal;
-        this.ativo = ativo;
+        this.ativo = true;
     }
-
-    // GETTERS E SETTERS 
 
     public String getId() {
         return id;
@@ -87,14 +61,6 @@ public class Associado {
         this.cpf = cpf;
     }
 
-    public String getIdentidade() {
-        return identidade;
-    }
-
-    public void setIdentidade(String identidade) {
-        this.identidade = identidade;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -109,6 +75,14 @@ public class Associado {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 
     public String getProfissao() {
@@ -127,22 +101,6 @@ public class Associado {
         this.religiao = religiao;
     }
 
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(LocalDate dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public Double getValorContribuicaoMensal() {
-        return valorContribuicaoMensal;
-    }
-
-    public void setValorContribuicaoMensal(Double valorContribuicaoMensal) {
-        this.valorContribuicaoMensal = valorContribuicaoMensal;
-    }
-
     public boolean isAtivo() {
         return ativo;
     }
@@ -151,12 +109,10 @@ public class Associado {
         this.ativo = ativo;
     }
 
-    // EQUALS & HASHCODE 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Associado)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Associado associado = (Associado) o;
         return Objects.equals(id, associado.id);
     }

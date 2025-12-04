@@ -28,20 +28,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        // 1. ROTAS PÚBLICAS
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers("/error").permitAll() // Importante para ver logs de erro 400/500
+                        .requestMatchers("/error").permitAll()
 
-                        // 2. ROTAS DO USUÁRIO COMUM
-                        // Permite que qualquer um logado veja seus próprios lançamentos
-                        .requestMatchers("/financeiro/meus-lancamentos").authenticated()
-
-                        // CONFIGURAÇÃO DO MÓDULO DE EVENTOS
-                        // Opção A: Se todos podem ver eventos, mas só Admin cria:
+                        // 2. MÓDULO DE EVENTOS
                         .requestMatchers(HttpMethod.GET, "/eventos/**").authenticated()
                         .requestMatchers("/eventos/**").hasAuthority("ROLE_" + UserRole.ADMIN.name())
 
-                        // 3. ROTAS ADMINISTRATIVAS
+                        // 3. ROTAS ADMINISTRATIVAS (Associados e Financeiro)
+                        // A Secretária (Admin) gerencia tudo isso
                         .requestMatchers("/associados/**").hasAuthority("ROLE_" + UserRole.ADMIN.name())
                         .requestMatchers("/financeiro/**").hasAuthority("ROLE_" + UserRole.ADMIN.name())
 

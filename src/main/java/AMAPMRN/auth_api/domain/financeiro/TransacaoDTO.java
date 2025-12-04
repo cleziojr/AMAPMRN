@@ -7,5 +7,5 @@ public record TransacaoDTO(
         String descricao,
         TipoTransacao tipo,
         String categoria,
-        String usuarioId
+        String associadoId
 ) {}

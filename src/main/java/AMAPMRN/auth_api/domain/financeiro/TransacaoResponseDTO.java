@@ -11,7 +11,7 @@ public record TransacaoResponseDTO(
         StatusTransacao status,
         LocalDate dataVencimento,
         String categoria,
-        String nomeUsuario
+        String nomeAssociado
 ) {
     public TransacaoResponseDTO(Transacao entidade){
         this(
@@ -22,7 +22,7 @@ public record TransacaoResponseDTO(
                 entidade.getStatus(),
                 entidade.getDataVencimento(),
                 entidade.getCategoria(),
-                entidade.getUsuario().getUsername()
+                entidade.getAssociado().getNome()
         );
     }
 }
